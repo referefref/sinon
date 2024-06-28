@@ -252,6 +252,17 @@ func changePreferences(config *Config) {
 	for _, resolution := range resolutions {
 		setScreenResolution(resolution)
 	}
+
+	languages := selectRandomOrHardcoded(prefs.Languages.Options, prefs.Languages.SelectionMethod)
+	for _, language := range languages {
+		cmd := exec.Command("powershell", "-Command", fmt.Sprintf(`Set-WinUILanguageOverride -Language "%s"`, language))
+		err := cmd.Run()
+		if err != nil {
+			log.Printf("Failed to set language to %s: %v", language, err)
+		} else {
+			log.Printf("Language set to %s", language)
+		}
+	}
 }
 
 func setScreenResolution(resolution string) {
@@ -317,28 +328,59 @@ func createAndModifyFiles(config *Config) {
 }
 
 func generateContentUsingGPT(apiKey string, prompt string) string {
-	requestBody, _ := json.Marshal(map[string]interface{}{
-		"prompt":     prompt,
-		"max_tokens": 100,
-	})
-	req, _ := http.NewRequest("POST", "https://api.openai.com/v1/engines/davinci-codex/completions", bytes.NewBuffer(requestBody))
-	req.Header.Set("Authorization", "Bearer "+apiKey)
-	req.Header.Set("Content-Type", "application/json")
+	prompt = fmt.Sprintf("This is where the prompt goes from the config file input: %s", prompt)
 
+	log.Printf(prompt)
+
+	// Prepare the JSON payload for the request
+	payload := map[string]interface{}{
+		"model":       "gpt-4o",
+		"prompt":      prompt,
+		"max_tokens":  2048,
+		"temperature": 0.3,
+	}
+	payloadBytes, err := json.Marshal(payload)
+	if err != nil {
+		log.Fatalf("Error marshalling payload: %v", err)
+	}
+
+	// Create a new request
+	req, err := http.NewRequest("POST", "https://api.openai.com/v1/completions", bytes.NewReader(payloadBytes))
+	if err != nil {
+		log.Fatalf("Error creating request: %v", err)
+	}
+
+	// Set headers
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer "+apiKey)
+
+	// Execute the request
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Printf("Failed to generate content using GPT: %v", err)
-		return ""
+		log.Fatalf("Error making request to OpenAI: %v", err)
 	}
 	defer resp.Body.Close()
 
-	var result map[string]interface{}
-	json.NewDecoder(resp.Body).Decode(&result)
-	choices := result["choices"].([]interface{})
-	text := choices[0].(map[string]interface{})["text"].(string)
+	// Read the response body
+	respBody, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatalf("Error reading response body: %v", err)
+	}
 
-	return text
+	// Parse the response
+	var response struct {
+		Choices []struct {
+			Text string `json:"text"`
+		} `json:"choices"`
+	}
+	if err := json.Unmarshal(respBody, &response); err != nil {
+		log.Fatalf("Error parsing response JSON: %v", err)
+	}
+
+	generatedContent := response.Choices[0].Text
+
+	return generatedContent
 }
 
 func sendEmails(config *Config) {
@@ -399,7 +441,7 @@ func manageSoftware(config *Config) {
 }
 
 func performSystemUpdates(config *Config) {
-	updates := selectRandomOrHardcoded(config.SystemUpdates.Options, config.SystemUpdates.SelectionMethod)
+	updates := config.SystemUpdates.Options
 	for _, update := range updates {
 		cmd := exec.Command("powershell", "-Command", update)
 		err := cmd.Run()
