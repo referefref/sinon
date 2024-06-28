@@ -39,11 +39,13 @@ Sinon performs the following functions, as determined by a config file:
 2. **Configure the application:**
    - Modify the `config.yaml` file to suit your needs. See the [Config Items](#config-items) section for details.
 
-3. **Build and run the application:**
+3. **Build the application:**
     ```sh
     go build -o sinon
-    ./sinon
+    # building for windows on linux: GOOS=windows GOARCH=amd64 go build -o sinon.exe
     ```
+4. **Deploy the application to your target machine:**
+   - This could be accomplished many ways, you may want to burn it in to an image, use SCCM/Intune etc.
 
 ## Config Items
 
