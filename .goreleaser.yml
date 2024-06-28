@@ -19,8 +19,7 @@ builds:
       - CGO_ENABLED=0
 
 archives:
-  - id: sinon_archive_windows
-    build: sinon_windows
+  - name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"
     format: zip
     files:
       - LICENSE
