@@ -6,26 +6,27 @@ Sinon is a modular tool for automatic burn-in of Windows-based deception hosts t
 
 ## Features
 
-- Generative content including files, emails, and so on using OpenAI API
+- Generative content including files, emails, and so on using OpenAI API (Configured for GPT-4o)
 - Randomness factor - select from list in config, or follow config completely
 - Temporal randomness - set delay to execution and delay between events including randomness factor
 
 Sinon performs the following functions, as determined by a config file:
 
-- **Install Applications:** Automatically installs specified applications using Chocolatey.
-- **Browse Websites:** Opens and browses a list of websites.
-- **Change Preferences:** Sets default browsers, background images, screen resolutions, and languages.
-- **Add Start Menu Items:** Adds specified items to the start menu.
-- **Create and Modify Files:** Generates and modifies files, optionally using GPT-4 for content generation.
-- **Send Emails:** Sends emails using specified Google or Microsoft accounts.
-- **Download Decoy Files:** Downloads decoy files from specified sources.
-- **Manage Software:** Performs software management tasks such as installation and uninstallation.
-- **Perform System Updates:** Executes system update commands.
-- **Manage User Accounts:** Creates and manages user accounts.
-- **Manage Network Settings:** Configures Wi-Fi networks.
-- **Open Media Files:** Opens media files (images, video, and audio).
-- **Print Documents:** Sends documents to print.
-- **Create Scheduled Tasks:** Creates and manages scheduled tasks.
+- **Install Applications**: Automatically install applications from a predefined list using Chocolatey.
+- **Browse Websites**: Automatically open a list of websites to simulate user activity.
+- **Change Preferences**: Modify system preferences such as default browser, background images, screen resolutions, and system languages.
+- **Add Start Menu Items**: Add shortcuts to specified applications in the start menu.
+- **Create and Modify Files**: Generate and modify text files with the option to use OpenAI GPT-4 for content generation.
+- **Send Emails**: Send emails with the option to use OpenAI GPT-4 for content generation.
+- **Download Decoy Files**: Download files from specified URLs to simulate decoy file activity.
+- **Manage Software**: Install or uninstall software applications using predefined commands.
+- **Perform System Updates**: Execute system update commands.
+- **Manage User Accounts**: Create and manage user accounts with specified attributes.
+- **Manage Network Settings**: Configure Wi-Fi network connections using SSID and password.
+- **Open Media Files**: Open media files such as images, videos, and audio files.
+- **Print Documents**: Print specified text documents.
+- **Create Scheduled Tasks**: Schedule tasks to run specified commands at defined times.
+- **Simulate User Interaction**: Control the duration and delay of interactions with randomness.
 
 ## Usage
 
