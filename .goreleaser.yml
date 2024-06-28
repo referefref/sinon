@@ -1,0 +1,29 @@
+# .goreleaser.yml
+project_name: sinon
+release:
+  github:
+    owner: referefref
+    name: sinon
+
+builds:
+  - id: sinon_windows
+    main: ./sinon.go
+    goos:
+      - windows
+    goarch:
+      - amd64
+    ldflags:
+      - -s -w
+    binary: sinon.exe
+    env:
+      - CGO_ENABLED=0
+
+archives:
+  - id: sinon_archive_windows
+    build: sinon_windows
+    format: zip
+    files:
+      - LICENSE
+      - README.md
+      - config.yaml
+      - "sinon.exe"
