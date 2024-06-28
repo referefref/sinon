@@ -25,4 +25,4 @@ archives:
       - LICENSE
       - README.md
       - config.yaml
-      - "sinon.exe"
+      - "dist/sinon_windows_windows_amd64_v1/sinon.exe"
