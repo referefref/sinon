@@ -147,7 +147,15 @@ printing:
   selection_method: random
 
 scheduled_tasks:
-  options: ["schtasks /create /tn ExampleTask /tr C:\\Path\\To\\Executable.exe /sc daily /st 12:00", "schtasks /create /tn ExampleTask2 /tr C:\\Path\\To\\AnotherExecutable.exe /sc weekly /d MON /st 08:00"]
+  options:
+    - name: "ExampleTask"
+      path: "C:\\Path\\To\\Executable.exe"
+      schedule: "daily"
+      start_time: "12:00"
+    - name: "ExampleTask2"
+      path: "C:\\Path\\To\\AnotherExecutable.exe"
+      schedule: "weekly"
+      start_time: "08:00"
   selection_method: random
 
 decoy_files:
