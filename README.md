@@ -54,6 +54,11 @@ applications:
     - googlechrome
     - vlc
     - 7zip
+    - notepadplusplus
+    - git
+    - firefox
+    - winscp
+    - slack
   selection_method: random
 
 websites:
@@ -61,6 +66,11 @@ websites:
     - https://www.example.com
     - https://www.google.com
     - https://www.github.com
+    - https://www.stackoverflow.com
+    - https://www.reddit.com
+    - https://www.wikipedia.org
+    - https://www.medium.com
+    - https://news.ycombinator.com
   selection_method: random
 
 preferences:
@@ -71,31 +81,43 @@ preferences:
     location: "http://example.com/backgrounds"
     type: "http"
     selection_method: random
+    options:
+      - http://example.com/backgrounds/image1.jpg
+      - http://example.com/backgrounds/image2.jpg
+      - http://example.com/backgrounds/image3.jpg
   screen_resolutions:
-    options: ["1920x1080", "1280x720"]
+    options: ["1920x1080", "1280x720", "1366x768", "1440x900"]
     selection_method: random
   languages:
-    options: ["en-US", "es-ES", "fr-FR"]
+    options: ["en-US", "es-ES", "fr-FR", "de-DE", "zh-CN"]
     selection_method: random
 
 start_menu_items:
   options:
-    - name: Chrome
+    - name: Google Chrome
       path: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
-    - name: VLC
+    - name: VLC Media Player
       path: "C:\\Program Files\\VideoLAN\\VLC\\vlc.exe"
+    - name: Notepad++
+      path: "C:\\Program Files\\Notepad++\\notepad++.exe"
+    - name: Git Bash
+      path: "C:\\Program Files\\Git\\git-bash.exe"
   selection_method: random
 
 file_operations:
   create_modify_files:
     options:
-      - path: "C:\\path\\to\\file1.txt"
-        content: "This is a test file."
+      - path: "C:\\Users\\Public\\Documents\\report.txt"
+        content: "This is a test report file."
         use_gpt: false
-      - path: "C:\\path\\to\\file2.docx"
-        content: "Generate a report on sales data."
+      - path: "C:\\Users\\Public\\Documents\\meeting_notes.txt"
+        content: "Generate a summary of the last meeting."
         use_gpt: true
-        gpt_prompt: "Generate a detailed sales report."
+        gpt_prompt: "Generate a detailed summary of the last team meeting discussing project milestones and deadlines."
+      - path: "C:\\Users\\Public\\Documents\\financial_analysis.txt"
+        content: "Analyze the financial data for Q1."
+        use_gpt: true
+        gpt_prompt: "Analyze the financial data for Q1, focusing on revenue, expenses, and profit margins."
     selection_method: random
 
 email_operations:
@@ -107,73 +129,96 @@ email_operations:
     password: "password"
   send_receive:
     options:
-      - send_to: "example1@example.com"
-        subject: "Test Email 1"
-        body: "This is a test email."
+      - send_to: "colleague@example.com"
+        subject: "Project Update"
+        body: "Please find the latest update on the project attached."
         use_gpt: false
-      - send_to: "example2@example.com"
-        subject: "Test Email 2"
-        body: "Generate a thank you email."
+      - send_to: "manager@example.com"
+        subject: "Weekly Report"
+        body: "Generate a weekly report on the team's performance."
         use_gpt: true
-        gpt_prompt: "Generate a thank you email."
+        gpt_prompt: "Generate a weekly report on the team's performance, including completed tasks, ongoing projects, and any blockers."
     selection_method: random
 
 software_management:
   options:
-    - install: "some_software"
-    - uninstall: "another_software"
+    - install: "vlc"
+    - uninstall: "notepadplusplus"
+    - install: "git"
+    - uninstall: "slack"
   selection_method: random
 
 system_updates:
-  options: ["check_updates", "apply_updates"]
-  selection_method: random
+  options: ["Get-WindowsUpdate -Install", "Install-WindowsUpdate -AcceptAll"]
+  selection_method: hardcoded
 
 user_accounts:
   options:
+    - name: "User01"
+      password: "Password123!"
+      full_name: "First User"
+      description: "First test user account."
+    - name: "User02"
+      password: "Password456!"
+      full_name: "Second User"
+      description: "Second test user account."
     - name: "User03"
-      password: "P@ssw0rd"
+      password: "Password789!"
       full_name: "Third User"
-      description: "Description of this account."
+      description: "Third test user account."
   selection_method: random
 
 network_settings:
   options:
-    - ssid: "Network1"
-      password: "Password1"
-    - ssid: "Network2"
-      password: "Password2"
+    - ssid: "HomeNetwork"
+      password: "HomePassword123"
+    - ssid: "OfficeNetwork"
+      password: "OfficePassword456"
+    - ssid: "GuestNetwork"
+      password: "GuestPassword789"
   selection_method: random
 
 system_logs:
-  options: ["read_logs", "generate_logs"]
-  selection_method: random
+  options: ["Get-EventLog -LogName System", "Get-EventLog -LogName Application"]
+  selection_method: hardcoded
 
 media_files:
-  options:
-    - "C:\\path\\to\\media1.mp4"
-    - "C:\\path\\to\\media2.mp3"
+  location: "http://example.com/media_files"
+  type: "http"
   selection_method: random
+  options:
+    - http://example.com/media_files/sample_video.mp4
+    - http://example.com/media_files/sample_music.mp3
+    - http://example.com/media_files/sample_image.jpg
 
 printing:
   options:
-    - "C:\\path\\to\\document1.pdf"
-    - "C:\\path\\to\\document2.txt"
+    - "C:\\Users\\Public\\Documents\\document1.pdf"
+    - "C:\\Users\\Public\\Documents\\document2.txt"
   selection_method: random
 
 scheduled_tasks:
-  options: ["create_task", "modify_task", "delete_task"]
+  options:
+    - name: "ExampleTask"
+      path: "C:\\Path\\To\\Executable.exe"
+      schedule: "daily"
+      start_time: "12:00"
+    - name: "ExampleTask2"
+      path: "C:\\Path\\To\\AnotherExecutable.exe"
+      schedule: "weekly"
+      start_time: "08:00"
   selection_method: random
 
 decoy_files:
-  location: ["http://example.com/decoy_files"]
+  location: ["http://jamesbrine.com.au/passwords.xlsx"]
   type: "http"
-  target_directory: "C:\\path\\to\\downloaded\\decoy_files"
+  target_directory: "C:\\Users\\Public\\DecoyFiles"
 
 interaction_duration: 3600
 action_delay: 5
 randomness_factor: 2
 
-openai_api_key: "your-openai-api-key"
+openai_api_key: ""
 ```
 
 ## Deploying Windows Deception Hosts
