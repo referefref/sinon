@@ -14,6 +14,7 @@ jobs:
     strategy:
        matrix:
          os: [ windows-latest ]
+    
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -22,16 +23,14 @@ jobs:
         with:
           fetch-depth: 0
       - name: Set up Go 1.18
-        uses: actions/setup-go@v4
-      - name: Test
-        run: |
-            go version
-            go mod tidy        
+        uses: actions/setup-go@v4     
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v5
+
         with:
           distribution: goreleaser
           version: latest
+          goos: windows
           args: release --clean --skip-validate
         env:
           GITHUB_TOKEN: ${{ secrets.GO_RELEASER_GITHUB_TOKEN }}
