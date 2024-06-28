@@ -68,37 +68,42 @@ type DEVMODE struct {
 }
 
 type Config struct {
-	Applications       Selection       `yaml:"applications"`
-	Websites           Selection       `yaml:"websites"`
-	Preferences        Preferences     `yaml:"preferences"`
-	StartMenuItems     Selection       `yaml:"start_menu_items"`
-	FileOperations     FileOperations  `yaml:"file_operations"`
-	EmailOperations    EmailOperations `yaml:"email_operations"`
-	SoftwareManagement Selection       `yaml:"software_management"`
-	SystemUpdates      Selection       `yaml:"system_updates"`
-	UserAccounts       []UserAccount   `yaml:"user_accounts"`
-	NetworkSettings    []Network       `yaml:"network_settings"`
-	SystemLogs         Selection       `yaml:"system_logs"`
-	MediaFiles         MediaLocation   `yaml:"media_files"`
-	Printing           Selection       `yaml:"printing"`
-	ScheduledTasks     Selection       `yaml:"scheduled_tasks"`
-	DecoyFiles         DecoyFiles      `yaml:"decoy_files"`
-	InteractionDuration int            `yaml:"interaction_duration"`
-	ActionDelay         int            `yaml:"action_delay"`
-	RandomnessFactor    int            `yaml:"randomness_factor"`
-	OpenAIAPIKey        string         `yaml:"openai_api_key"`
+	Applications       StringSelection          `yaml:"applications"`
+	Websites           StringSelection          `yaml:"websites"`
+	Preferences        Preferences              `yaml:"preferences"`
+	StartMenuItems     StringSelection          `yaml:"start_menu_items"`
+	FileOperations     FileOperations           `yaml:"file_operations"`
+	EmailOperations    EmailOperations          `yaml:"email_operations"`
+	SoftwareManagement StringSelection          `yaml:"software_management"`
+	SystemUpdates      StringSelection          `yaml:"system_updates"`
+	UserAccounts       []UserAccount            `yaml:"user_accounts"`
+	NetworkSettings    []Network                `yaml:"network_settings"`
+	SystemLogs         StringSelection          `yaml:"system_logs"`
+	MediaFiles         MediaLocation            `yaml:"media_files"`
+	Printing           StringSelection          `yaml:"printing"`
+	ScheduledTasks     ScheduledTaskSelection   `yaml:"scheduled_tasks"`
+	DecoyFiles         DecoyFiles               `yaml:"decoy_files"`
+	InteractionDuration int                     `yaml:"interaction_duration"`
+	ActionDelay         int                     `yaml:"action_delay"`
+	RandomnessFactor    int                     `yaml:"randomness_factor"`
+	OpenAIAPIKey        string                  `yaml:"openai_api_key"`
 }
 
-type Selection struct {
+type StringSelection struct {
 	Options         []string `yaml:"options"`
 	SelectionMethod string   `yaml:"selection_method"`
 }
 
+type ScheduledTaskSelection struct {
+	Options         []ScheduledTask `yaml:"options"`
+	SelectionMethod string          `yaml:"selection_method"`
+}
+
 type Preferences struct {
-	DefaultBrowser    Selection     `yaml:"default_browser"`
-	BackgroundImages  MediaLocation `yaml:"background_images"`
-	ScreenResolutions Selection     `yaml:"screen_resolutions"`
-	Languages         Selection     `yaml:"languages"`
+	DefaultBrowser    StringSelection `yaml:"default_browser"`
+	BackgroundImages  MediaLocation   `yaml:"background_images"`
+	ScreenResolutions StringSelection `yaml:"screen_resolutions"`
+	Languages         StringSelection `yaml:"languages"`
 }
 
 type FileOperations struct {
@@ -154,6 +159,13 @@ type UserAccount struct {
 type Network struct {
 	SSID     string `yaml:"ssid"`
 	Password string `yaml:"password"`
+}
+
+type ScheduledTask struct {
+	Name      string `yaml:"name"`
+	Path      string `yaml:"path"`
+	Schedule  string `yaml:"schedule"`
+	StartTime string `yaml:"start_time"`
 }
 
 func loadConfig(filename string) (*Config, error) {
@@ -548,16 +560,24 @@ func printDocuments(config *Config) {
 }
 
 func createScheduledTasks(config *Config) {
-	tasks := selectRandomOrHardcoded(config.ScheduledTasks.Options, config.ScheduledTasks.SelectionMethod)
+	tasks := selectRandomOrHardcodedScheduledTasks(config.ScheduledTasks.Options, config.ScheduledTasks.SelectionMethod)
 	for _, task := range tasks {
-		cmd := exec.Command("powershell", "-Command", "schtasks", "/create", task)
+		cmd := exec.Command("powershell", "-Command", fmt.Sprintf("schtasks /create /tn %s /tr %s /sc %s /st %s", task.Name, task.Path, task.Schedule, task.StartTime))
 		err := cmd.Run()
 		if err != nil {
-			log.Printf("Failed to create scheduled task %s: %v", task, err)
+			log.Printf("Failed to create scheduled task %s: %v", task.Name, err)
 		} else {
-			log.Printf("Created scheduled task %s", task)
+			log.Printf("Created scheduled task %s", task.Name)
 		}
 	}
+}
+
+func selectRandomOrHardcodedScheduledTasks(options []ScheduledTask, method string) []ScheduledTask {
+	if method == "hardcoded" {
+		return options
+	}
+	rand.Seed(time.Now().UnixNano())
+	return []ScheduledTask{options[rand.Intn(len(options))]}
 }
 
 func main() {
