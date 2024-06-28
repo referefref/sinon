@@ -1,0 +1,37 @@
+name: Release Go project
+
+on:
+  push:
+    tags:
+      - "*"
+      
+permissions:
+   contents: write
+ 
+jobs:      
+  build:
+    name: sinon release
+    strategy:
+       matrix:
+         os: [ windows-latest ]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Set up Go 1.18
+        uses: actions/setup-go@v4
+      - name: Test
+        run: |
+            go version
+            go mod tidy        
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v5
+        with:
+          distribution: goreleaser
+          version: latest
+          args: release --clean --skip-validate
+        env:
+          GITHUB_TOKEN: ${{ secrets.GO_RELEASER_GITHUB_TOKEN }}
