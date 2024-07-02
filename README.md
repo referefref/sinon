@@ -27,6 +27,16 @@ Sinon performs the following functions, as determined by a config file:
 - **Print Documents**: Print specified text documents.
 - **Create Scheduled Tasks**: Schedule tasks to run specified commands at defined times.
 - **Simulate User Interaction**: Control the duration and delay of interactions with randomness.
+- **Create Lures**: Generate various types of lures to deceive intruders.
+  - Credential pairs
+  - SSH keys
+  - Website URLs
+  - Registry keys
+  - CSV documents
+  - API keys
+  - LNK files (shortcuts)
+- **Monitor File System**: Watch specified paths for file system events such as modifications and log these events.
+- **Redis Connectivity**: Send session metadata to a Redis server for centralized logging and analysis.
 
 ## Usage
 
@@ -44,6 +54,7 @@ Sinon performs the following functions, as determined by a config file:
     go build -o sinon
     # building for windows on linux: GOOS=windows GOARCH=amd64 go build -o sinon.exe
     ```
+
 4. **Deploy the application to your target machine:**
    - This could be accomplished many ways, you may want to burn it in to an image, use SCCM/Intune etc.
 
@@ -55,73 +66,54 @@ The `config.yaml` file contains all the configuration options for Sinon. Here is
 applications:
   options:
     - googlechrome
-    - vlc
-    - 7zip
-    - notepadplusplus
-    - git
     - firefox
-    - winscp
-    - slack
+    - notepadplusplus
+    - vlc
   selection_method: random
 
 websites:
   options:
-    - https://www.example.com
     - https://www.google.com
-    - https://www.github.com
-    - https://www.stackoverflow.com
-    - https://www.reddit.com
     - https://www.wikipedia.org
-    - https://www.medium.com
-    - https://news.ycombinator.com
+    - https://www.github.com
   selection_method: random
 
 preferences:
   default_browser:
-    options: [googlechrome, firefox, edge]
+    options:
+      - "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
+      - "C:\\Program Files\\Mozilla Firefox\\firefox.exe"
     selection_method: random
   background_images:
-    location: "http://example.com/backgrounds"
-    type: "http"
+    location: "C:\\Users\\user\\Pictures"
+    type: http
     selection_method: random
     options:
-      - http://example.com/backgrounds/image1.jpg
-      - http://example.com/backgrounds/image2.jpg
-      - http://example.com/backgrounds/image3.jpg
+      - https://example.com/background1.jpg
+      - https://example.com/background2.jpg
   screen_resolutions:
-    options: ["1920x1080", "1280x720", "1366x768", "1440x900"]
+    options:
+      - "1920x1080"
+      - "1366x768"
     selection_method: random
   languages:
-    options: ["en-US", "es-ES", "fr-FR", "de-DE", "zh-CN"]
+    options:
+      - en-US
+      - es-ES
     selection_method: random
 
 start_menu_items:
   options:
-    - name: Google Chrome
-      path: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
-    - name: VLC Media Player
-      path: "C:\\Program Files\\VideoLAN\\VLC\\vlc.exe"
-    - name: Notepad++
-      path: "C:\\Program Files\\Notepad++\\notepad++.exe"
-    - name: Git Bash
-      path: "C:\\Program Files\\Git\\git-bash.exe"
+    - "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
+    - "C:\\Program Files\\Mozilla Firefox\\firefox.exe"
   selection_method: random
 
 file_operations:
   create_modify_files:
-    options:
-      - path: "C:\\Users\\Public\\Documents\\report.txt"
-        content: "This is a test report file."
-        use_gpt: false
-      - path: "C:\\Users\\Public\\Documents\\meeting_notes.txt"
-        content: "Generate a summary of the last meeting."
-        use_gpt: true
-        gpt_prompt: "Generate a detailed summary of the last team meeting discussing project milestones and deadlines."
-      - path: "C:\\Users\\Public\\Documents\\financial_analysis.txt"
-        content: "Analyze the financial data for Q1."
-        use_gpt: true
-        gpt_prompt: "Analyze the financial data for Q1, focusing on revenue, expenses, and profit margins."
-    selection_method: random
+    - path: "C:\\Users\\user\\Documents\\example.txt"
+      content: "This is an example text file."
+      use_gpt: false
+      gpt_prompt: ""
 
 email_operations:
   google_account:
@@ -131,97 +123,144 @@ email_operations:
     email: "user@outlook.com"
     password: "password"
   send_receive:
-    options:
-      - send_to: "colleague@example.com"
-        subject: "Project Update"
-        body: "Please find the latest update on the project attached."
-        use_gpt: false
-      - send_to: "manager@example.com"
-        subject: "Weekly Report"
-        body: "Generate a weekly report on the team's performance."
-        use_gpt: true
-        gpt_prompt: "Generate a weekly report on the team's performance, including completed tasks, ongoing projects, and any blockers."
-    selection_method: random
+    - send_to: "recipient@example.com"
+      subject: "Test Email"
+      body: "This is a test email."
+      use_gpt: true
+      gpt_prompt: "Write a friendly email to a colleague."
 
 software_management:
   options:
-    - install: "vlc"
-    - uninstall: "notepadplusplus"
-    - install: "git"
-    - uninstall: "slack"
+    - upgrade all
+    - uninstall vlc
   selection_method: random
 
 system_updates:
-  options: ["Get-WindowsUpdate -Install", "Install-WindowsUpdate -AcceptAll"]
-  selection_method: hardcoded
+  method: install_all
+  specific_updates:
+    - KB123456
+    - KB789012
+  selection_method: random
+  hide_updates:
+    - KB654321
+    - KB210987
 
 user_accounts:
-  options:
-    - name: "User01"
-      password: "Password123!"
-      full_name: "First User"
-      description: "First test user account."
-    - name: "User02"
-      password: "Password456!"
-      full_name: "Second User"
-      description: "Second test user account."
-    - name: "User03"
-      password: "Password789!"
-      full_name: "Third User"
-      description: "Third test user account."
-  selection_method: random
+  - name: user1
+    password: password1
+    full_name: User One
+    description: First user account
+  - name: user2
+    password: password2
+    full_name: User Two
+    description: Second user account
 
 network_settings:
-  options:
-    - ssid: "HomeNetwork"
-      password: "HomePassword123"
-    - ssid: "OfficeNetwork"
-      password: "OfficePassword456"
-    - ssid: "GuestNetwork"
-      password: "GuestPassword789"
-  selection_method: random
+  - ssid: ExampleSSID
+    password: examplepassword
 
 system_logs:
-  options: ["Get-EventLog -LogName System", "Get-EventLog -LogName Application"]
-  selection_method: hardcoded
+  options:
+    - Application
+    - System
+  selection_method: random
 
 media_files:
-  location: "http://example.com/media_files"
-  type: "http"
+  location: "C:\\Users\\user\\Videos"
+  type: http
   selection_method: random
   options:
-    - http://example.com/media_files/sample_video.mp4
-    - http://example.com/media_files/sample_music.mp3
-    - http://example.com/media_files/sample_image.jpg
+    - https://example.com/video1.mp4
+    - https://example.com/video2.mp4
 
 printing:
   options:
-    - "C:\\Users\\Public\\Documents\\document1.pdf"
-    - "C:\\Users\\Public\\Documents\\document2.txt"
+    - "C:\\Users\\user\\Documents\\print_me.txt"
   selection_method: random
 
 scheduled_tasks:
   options:
-    - name: "ExampleTask"
-      path: "C:\\Path\\To\\Executable.exe"
+    - name: Task1
+      path: "C:\\Windows\\System32\\notepad.exe"
       schedule: "daily"
-      start_time: "12:00"
-    - name: "ExampleTask2"
-      path: "C:\\Path\\To\\AnotherExecutable.exe"
+      start_time: "14:00"
+    - name: Task2
+      path: "C:\\Windows\\System32\\calc.exe"
       schedule: "weekly"
-      start_time: "08:00"
+      start_time: "10:00"
   selection_method: random
 
 decoy_files:
-  location: ["http://jamesbrine.com.au/passwords.xlsx"]
-  type: "http"
-  target_directory: "C:\\Users\\Public\\DecoyFiles"
+  sets:
+    - location:
+        - "https://example.com/decoy1.txt"
+        - "https://example.com/decoy2.txt"
+      type: http
+      target_directory:
+        - "C:\\Users\\user\\Documents"
+      selection_method: random
 
-interaction_duration: 3600
-action_delay: 5
-randomness_factor: 2
+lures:
+  - name: CredentialLure
+    type: credential_pair
+    location: "C:\\Users\\user\\Desktop\\credential.txt"
+    generation_params:
+      length: 12
+    generative_type: golang
+    openai_prompt: ""
+  - name: SSLLure
+    type: ssh_key
+    location: "C:\\Users\\user\\Desktop\\id_rsa"
+    generation_params: {}
+    generative_type: golang
+    openai_prompt: ""
+  - name: URLLure
+    type: website_url
+    location: "C:\\Users\\user\\Desktop\\phishing_link.url"
+    generation_params:
+      base_url: "https://malicious.example.com"
+    generative_type: golang
+    openai_prompt: ""
+  - name: RegistryLure
+    type: registry_key
+    location: "HKEY_CURRENT_USER\\Software\\ExampleKey"
+    generation_params:
+      registry_key_type: "REG_SZ"
+      registry_key_value: "ExampleValue"
+    generative_type: golang
+    openai_prompt: ""
+  - name: CSVLure
+    type: csv
+    location: "C:\\Users\\user\\Desktop\\financial_records.csv"
+    generation_params:
+      document_content: "Date,Amount,Description\n2024-01-01,1000,Salary"
+    generative_type: golang
+    openai_prompt: ""
+  - name: APIKeyLure
+    type: api_key
+    location: "C:\\Users\\user\\Desktop\\api_key.txt"
+    generation_params:
+      api_key_format: "uuid"
+    generative_type: golang
+    openai_prompt: ""
+  - name: LNKLure
+    type: lnk
+    location: "C:\\Users\\user\\Desktop\\shortcut.lnk"
+    generation_params:
+      target_path: "C:\\Windows\\System32\\notepad.exe"
+    generative_type: golang
+    openai_prompt: ""
 
-openai_api_key: ""
+general:
+  redis:
+    ip: "127.0.0.1"
+    port: 6379
+  log_file: "C:\\Users\\user\\sinon.log"
+  openai_api_key: "your_openai_api_key"
+  interaction_duration: 60
+  action_delay: 5
+  randomness_factor: 2
+
 ```
 
 ## Deploying Windows Deception Hosts
