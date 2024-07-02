@@ -36,7 +36,7 @@ Sinon performs the following functions, as determined by a config file:
   - API keys
   - LNK files (shortcuts)
 - **Monitor File System**: Watch specified paths for file system events such as modifications and log these events.
-- **Redis Connectivity**: Send session metadata to a Redis server for centralized logging and analysis.
+- **Redis Connectivity**: Send generated lure data to Redis server for utilisation in additional deception steps and platforms.
 
 ## Usage
 
