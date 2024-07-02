@@ -13,14 +13,15 @@ func main() {
 		log.Fatalf("Error loading config file: %v", err)
 	}
 
+	logger := logMultiWriter(config.General.LogFile)
+
 	if config.General.LogFile != "" {
-		logToFile(config.General.LogFile, "Starting interaction")
+		logger.Println("Starting interaction")
 	}
 
 	// Check if Chocolatey is installed
-	if err := checkAndInstallChocolatey(); err != nil {
-		logToFile(config.General.LogFile, "Error installing Chocolatey: "+err.Error())
-		log.Fatalf("Error installing Chocolatey: %v", err)
+	if err := checkAndInstallChocolatey(config); err != nil {
+		logger.Fatalf("Error installing Chocolatey: %v", err)
 	}
 
 	// Perform initial setup
@@ -48,11 +49,9 @@ func main() {
 		duration = 60 // Default duration in minutes
 	}
 
-	// Keep the application running
-	select {
-	case <-time.After(time.Duration(duration) * time.Minute):
-		if config.General.LogFile != "" {
-			logToFile(config.General.LogFile, "Interaction completed")
-		}
+	time.Sleep(time.Duration(duration) * time.Minute)
+
+	if config.General.LogFile != "" {
+		logger.Println("Interaction completed")
 	}
 }
