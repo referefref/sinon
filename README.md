@@ -3,6 +3,7 @@
 ![image](https://github.com/referefref/sinon/assets/56499429/9c5395ac-2034-4bcb-8214-c3690013d521)
 
 Sinon is a modular tool for automatic burn-in of Windows-based deception hosts that aims to reduce the difficulty of orchestrating deception hosts at scale whilst enabling diversity and randomness through generative capabilities. It has been created as a proof-of-concept and is not intended for production deception environments. It would likely be better suited to having content pre-generated and built into a one-time script, as we wouldn't want to be storing secrets like OpenAI API keys on a decoy or deception host.
+- As featured on [***helpnetsecurity.com***](https://www.helpnetsecurity.com/2024/08/30/sinon-open-source-automatic-generative-burn-in-for-windows-deception-hosts), [***itsecuritynews.info***](https://www.itsecuritynews.info/sinon-open-source-automatic-generative-burn-in-for-windows-deception-hosts-2/)
 
 ## Features
 
